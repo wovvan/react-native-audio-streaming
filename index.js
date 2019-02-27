@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import {
     NativeModules,
     StyleSheet,
@@ -42,6 +41,9 @@ class Player extends Component {
             'AudioBridgeEvent', (evt) => {
                 // We just want meta update for song name
                 if (evt.status === METADATA_UPDATED && evt.key === 'StreamTitle') {
+                    if (typeof this.props.setSong === 'function') {
+                        this.props.setSong(evt.value);
+                    }
                     this.setState({song: evt.value});
                 } else if (evt.status != METADATA_UPDATED) {
                     this.setState(evt);
@@ -110,7 +112,7 @@ class Player extends Component {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        bottom: 0,
+        bottom: -200,
         left: 0,
         right: 0,
         alignItems: 'center',
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
 });
 
 Player.propTypes = {
-    url: PropTypes.string.isRequired
+    url: React.PropTypes.string.isRequired
 };
 
 export { Player, ReactNativeAudioStreaming }
